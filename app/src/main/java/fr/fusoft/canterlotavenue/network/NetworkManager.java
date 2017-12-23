@@ -9,30 +9,110 @@ import java.util.Map;
 
 public abstract class NetworkManager {
 
+    public enum Method{
+        GET("GET"),
+        POST("POST"),
+        HEAD("HEAD");
+
+        private String label;
+
+        Method(String label){
+            this.label = label;
+        }
+    }
+
     public class Response{
-        private String body;
+        private String html;
         private int code;
         private Map<String, String> headers;
+        private Request request;
+        private boolean success = false;
+        private String error;
+
+        public Response(String html, int code, Map<String, String> headers){
+            setCode(code);
+            setHeaders(headers);
+            setHtml(html);
+            this.success = true;
+        }
+
+        public Response(int code, String error){
+            setCode(code);
+            setError(error);
+            this.success = false;
+        }
+
+        public void setError(String error){
+            this.error = error;
+        }
+
+        public String getError(){
+            return this.error;
+        }
+
+        public void setRequest(Request req){
+            this.request = req;
+        }
+
+        public void setCode(int code){
+            this.code = code;
+        }
+
+        public void setHtml(String html){
+            this.html = html;
+        }
+
+        public void setHeaders(Map<String, String> headers){
+            this.headers = headers;
+        }
+
+        public Request getRequest(){
+            return this.request;
+        }
+
+        public String getHeader(String key){
+            return this.headers.get(key);
+        }
+
+        public String getHtml(){
+            return this.html;
+        }
+
+        public int getCode(){
+            return this.code;
+        }
     }
 
     public class Request{
+        private Method method;
         private String url;
         private Map<String, String> headers = new HashMap<>();
         private Map<String, String> form = new HashMap<>();
 
-        public Request(String url){
+        public Request(Method method, String url){
             setUrl(url);
+            setMethod(method);
         }
 
-        public Request(String url, Map<String, String> form){
+        public Request(Method method,  String url, Map<String, String> form){
             setUrl(url);
             setForm(form);
+            setMethod(method);
         }
 
-        public Request(String url, Map<String, String> form, Map<String, String> headers){
+        public Request(Method method,  String url, Map<String, String> form, Map<String, String> headers){
             setUrl(url);
             setHeaders(headers);
             setForm(form);
+            setMethod(method);
+        }
+
+        public void setMethod(Method m){
+            this.method = m;
+        }
+
+        public Method getMethod(){
+            return this.method;
         }
 
         public void setUrl(String url){
@@ -55,6 +135,10 @@ public abstract class NetworkManager {
             this.form = form;
         }
 
+        public String getFormField(String key){
+            return this.getForm().get(key);
+        }
+
         public String getUrl(){
             return this.url;
         }
@@ -73,14 +157,10 @@ public abstract class NetworkManager {
     }
 
     public Response get(String url){
-        return this.get(new Request(url));
+        return this.processRequest(new Request(Method.GET,  url));
     }
-    public abstract Response get(Request req);
 
-    public Response post(String url, Map<String, String> parameters){
-        return this.post(new Request(url, parameters));
-    }
-    public abstract Response post(Request req);
+    public Response post(String url, Map<String, String> parameters){return this.processRequest(new Request(Method.POST, url , parameters));}
 
-    public abstract Response head(Request req);
+    public abstract Response processRequest(Request r);
 }

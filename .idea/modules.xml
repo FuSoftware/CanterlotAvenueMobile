@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CanterlotAvenue.iml" filepath="$PROJECT_DIR$/CanterlotAvenue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CanterlotAvenueMobile.iml" filepath="$PROJECT_DIR$/CanterlotAvenueMobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

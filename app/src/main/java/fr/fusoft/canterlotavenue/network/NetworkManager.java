@@ -42,6 +42,8 @@ public abstract class NetworkManager {
             this.success = false;
         }
 
+        public boolean isSuccess(){return this.success;}
+
         public void setError(String error){
             this.error = error;
         }

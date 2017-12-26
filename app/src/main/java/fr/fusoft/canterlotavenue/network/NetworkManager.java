@@ -86,10 +86,27 @@ public abstract class NetworkManager {
     }
 
     public class Request{
+        public class Builder{
+            Request request = new Request();
+
+            public Builder(){}
+
+            public Request build(){return this.request;}
+
+            public void url(String url){request.setUrl(url);}
+            public void method(Method method){request.setMethod(method);}
+            public void get(){request.setMethod(Method.GET);}
+            public void post(){request.setMethod(Method.POST);}
+            public void post(Map<String, String> form){request.setMethod(Method.POST);setForm(form);}
+            public void form(Map<String, String> form){request.setForm(form);}
+        }
+
         private Method method;
         private String url;
         private Map<String, String> headers = new HashMap<>();
         private Map<String, String> form = new HashMap<>();
+
+        public Request(){}
 
         public Request(Method method, String url){
             setUrl(url);

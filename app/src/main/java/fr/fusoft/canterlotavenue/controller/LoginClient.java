@@ -1,31 +1,27 @@
 package fr.fusoft.canterlotavenue.controller;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.text.Html;
 import android.util.Log;
-import android.widget.TextView;
 
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.fusoft.canterlotavenue.data.User;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import fr.fusoft.canterlotavenue.network.NetworkManager;
+import fr.fusoft.canterlotavenue.network.NetworkManager.Request;
+import fr.fusoft.canterlotavenue.network.NetworkManager.Response;
 
 /**
  * Created by Florent on 18/12/2017.
  */
 
-public class LoginClient {
+public class     LoginClient {
     private static final String LOG_TAG = "LoginClient";
     private static final String URL_PONIVERSE_OAUTH = "https://poniverse.net/oauth/login";
     private static final String URL_PONIVERSE_LOGIN = "https://poniverse.net/login";
@@ -37,10 +33,10 @@ public class LoginClient {
         void onLoginFailed(String error);
     }
 
-    private NetworkController controller = null;
+    private NetworkManager controller = null;
     private LoginListener mListener = null;
 
-    public LoginClient(NetworkController c){
+    public LoginClient(NetworkManager c){
         this.controller = c;
     }
 
@@ -61,7 +57,7 @@ public class LoginClient {
 
     public String getLoginHtml(String user, String pass){
         try{
-            return loginRequest(user,pass,false).body().string();
+            return loginRequest(user,pass,false).getHtml();
         }catch(Exception e){
             return "";
         }
@@ -75,46 +71,23 @@ public class LoginClient {
      @param remember Remember the password
      @return Returned HTML
      */
-    public Response loginRequest(String user, String pass, Boolean remember){
-        return this.controller.sendRequest(generateLoginForm(user,pass,remember));
+    public NetworkManager.Response loginRequest(String user, String pass, Boolean remember){
+        return this.controller.process(generateLoginForm(user,pass,remember));
     }
 
     private Request generateLoginForm(String user, String pass, Boolean remember){
-        RequestBody body =  new FormBody.Builder()
-                .addEncoded("username", user)
-                .addEncoded("password", pass)
-                .addEncoded("submit","")
-                .addEncoded("_token",getTokenJs())
-                .build();
+        Map<String, String> form = new HashMap<>();
+        form.put("username", user);
+        form.put("password", pass);
+        form.put("submit","");
+        form.put("_token", getTokenJs());
 
         Request request = new Request.Builder()
                 .url(URL_PONIVERSE_LOGIN)
-                .addHeader("content-type","application/x-www-form-urlencoded")
-                .post(body)
+                .form(form)
                 .build();
+
         return request;
-    }
-
-    private Request generateLoginJson(String user, String pass, Boolean remember){
-        JSONObject data = new JSONObject();
-        try{
-            data.put("username",user);
-            data.put("password",pass);
-            data.put("submit","");
-            data.put("_token",getTokenJs());
-
-            RequestBody body =  RequestBody.create(MediaType.parse("application/json; charset=utf-8"),data.toString());
-
-            Request request = new Request.Builder()
-                    .url(URL_PONIVERSE_LOGIN)
-                    .post(body)
-                    .build();
-            return request;
-
-        }catch(Exception e){
-            Log.w(LOG_TAG,"Error while generating login request : " + e.getMessage());
-            return null;
-        }
     }
 
     public String getPoniverseOauth(){
@@ -123,10 +96,10 @@ public class LoginClient {
                 .get()
                 .build();
 
-        Response res = this.controller.sendRequest(request);
+        Response res = this.controller.process(request);
         String html = "";
         try{
-            html = res.body().string();
+            html = res.getHtml();
         }catch(Exception e){
             Log.e(LOG_TAG,"Error while loading the Ponauth response body.");
         }
@@ -144,11 +117,11 @@ public class LoginClient {
                 .get()
                 .build();
 
-        Response res = this.controller.sendRequest(request);
+        Response res = this.controller.process(request);
     }
 
     public boolean isLoggedIn(){
-        String html = this.controller.get(URL_CANTERLOT_AVENUE);
+        String html = this.controller.get(URL_CANTERLOT_AVENUE).getHtml();
         Elements e = Jsoup.parse(html).body().getElementsByClass("logout");
         return e.size()>0;
     }
@@ -158,7 +131,7 @@ public class LoginClient {
      @return Poniverse's Token
      */
     public String getToken(){
-        String html = this.controller.get(URL_PONIVERSE_OAUTH);
+        String html = this.controller.get(URL_PONIVERSE_OAUTH).getHtml();
         Element form = Jsoup.parse(html).select("form").first();
         Element token = form.getElementsByAttributeValue("name","_token").first();
         return token.attr("value");
@@ -169,7 +142,7 @@ public class LoginClient {
      @return Poniverse's Token
      */
     public String getTokenJs(){
-        String html = this.controller.get(URL_PONIVERSE_LOGIN);
+        String html = this.controller.get(URL_PONIVERSE_LOGIN).getHtml();
         Pattern p = Pattern.compile("token: \"(.+)\"");
         Matcher m = p.matcher(html);
         return m.find() ? m.group(1) : "";
@@ -188,7 +161,7 @@ public class LoginClient {
         private String user;
         private String pass;
 
-        public LoginTask(String user, String pass, NetworkController controller, LoginListener listener){
+        public LoginTask(String user, String pass, NetworkManager controller, LoginListener listener){
             this.listener = listener;
             this.client = new LoginClient(controller);
             this.user = user;

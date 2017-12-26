@@ -79,7 +79,7 @@ public class OkHttpNetworkManager extends NetworkManager {
     }
 
     @Override
-    public Response processRequest(Request req) {
+    public Response process(Request req) {
 
         okhttp3.Request.Builder request = new okhttp3.Request.Builder();
         request.url(req.getUrl());

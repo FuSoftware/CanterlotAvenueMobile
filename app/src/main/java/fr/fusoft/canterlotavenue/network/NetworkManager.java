@@ -21,7 +21,7 @@ public abstract class NetworkManager {
         }
     }
 
-    public class Response{
+    public static class Response{
         private String html;
         private int code;
         private Map<String, String> headers;
@@ -85,20 +85,43 @@ public abstract class NetworkManager {
         }
     }
 
-    public class Request{
-        public class Builder{
+    public static class Request{
+        public static class Builder{
             Request request = new Request();
 
             public Builder(){}
 
             public Request build(){return this.request;}
 
-            public void url(String url){request.setUrl(url);}
-            public void method(Method method){request.setMethod(method);}
-            public void get(){request.setMethod(Method.GET);}
-            public void post(){request.setMethod(Method.POST);}
-            public void post(Map<String, String> form){request.setMethod(Method.POST);setForm(form);}
-            public void form(Map<String, String> form){request.setForm(form);}
+            public Builder header(String header, String value){
+                request.addHeader(header,value);
+                return this;
+            }
+            public Builder url(String url){
+                request.setUrl(url);
+                return this;
+            }
+            public Builder method(Method method){
+                request.setMethod(method);
+                return this;
+            }
+            public Builder get(){
+                request.setMethod(Method.GET);
+                return this;
+            }
+            public Builder post(){
+                request.setMethod(Method.POST);
+                return this;
+            }
+            public Builder post(Map<String, String> form){
+                request.setMethod(Method.POST);
+                form(form);
+                return this;
+            }
+            public Builder form(Map<String, String> form){
+                request.setForm(form);
+                return this;
+            }
         }
 
         private Method method;
@@ -176,10 +199,10 @@ public abstract class NetworkManager {
     }
 
     public Response get(String url){
-        return this.processRequest(new Request(Method.GET,  url));
+        return this.process(new Request(Method.GET,  url));
     }
 
-    public Response post(String url, Map<String, String> parameters){return this.processRequest(new Request(Method.POST, url , parameters));}
+    public Response post(String url, Map<String, String> parameters){return this.process(new Request(Method.POST, url , parameters));}
 
-    public abstract Response processRequest(Request r);
+    public abstract Response process(Request r);
 }

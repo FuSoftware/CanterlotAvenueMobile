@@ -85,6 +85,7 @@ public class     LoginClient {
         Request request = new Request.Builder()
                 .url(URL_PONIVERSE_LOGIN)
                 .form(form)
+                .post()
                 .build();
 
         return request;
@@ -99,6 +100,7 @@ public class     LoginClient {
         Response res = this.controller.process(request);
         String html = "";
         try{
+            Log.d(LOG_TAG, "Response from CA Ponauth " + res.getCode());
             html = res.getHtml();
         }catch(Exception e){
             Log.e(LOG_TAG,"Error while loading the Ponauth response body.");
@@ -118,6 +120,8 @@ public class     LoginClient {
                 .build();
 
         Response res = this.controller.process(request);
+
+        Log.d(LOG_TAG, "Login Ponauth : " + res.getCode());
     }
 
     public boolean isLoggedIn(){

@@ -85,40 +85,49 @@ public abstract class NetworkManager {
         }
     }
 
-    public static class Request{
-        public static class Builder{
+    public static class Request {
+        public static class Builder {
             Request request = new Request();
 
-            public Builder(){}
+            public Builder() {
+            }
 
-            public Request build(){return this.request;}
+            public Request build() {
+                return this.request;
+            }
 
-            public Builder header(String header, String value){
-                request.addHeader(header,value);
+            public Builder header(String header, String value) {
+                request.addHeader(header, value);
                 return this;
             }
-            public Builder url(String url){
+
+            public Builder url(String url) {
                 request.setUrl(url);
                 return this;
             }
-            public Builder method(Method method){
+
+            public Builder method(Method method) {
                 request.setMethod(method);
                 return this;
             }
-            public Builder get(){
+
+            public Builder get() {
                 request.setMethod(Method.GET);
                 return this;
             }
-            public Builder post(){
+
+            public Builder post() {
                 request.setMethod(Method.POST);
                 return this;
             }
-            public Builder post(Map<String, String> form){
+
+            public Builder post(Map<String, String> form) {
                 request.setMethod(Method.POST);
                 form(form);
                 return this;
             }
-            public Builder form(Map<String, String> form){
+
+            public Builder form(Map<String, String> form) {
                 request.setForm(form);
                 return this;
             }
@@ -129,67 +138,68 @@ public abstract class NetworkManager {
         private Map<String, String> headers = new HashMap<>();
         private Map<String, String> form = new HashMap<>();
 
-        public Request(){}
+        public Request() {
+        }
 
-        public Request(Method method, String url){
+        public Request(Method method, String url) {
             setUrl(url);
             setMethod(method);
         }
 
-        public Request(Method method,  String url, Map<String, String> form){
+        public Request(Method method, String url, Map<String, String> form) {
             setUrl(url);
             setForm(form);
             setMethod(method);
         }
 
-        public Request(Method method,  String url, Map<String, String> form, Map<String, String> headers){
+        public Request(Method method, String url, Map<String, String> form, Map<String, String> headers) {
             setUrl(url);
             setHeaders(headers);
             setForm(form);
             setMethod(method);
         }
 
-        public void setMethod(Method m){
+        public void setMethod(Method m) {
             this.method = m;
         }
 
-        public Method getMethod(){
+        public Method getMethod() {
             return this.method;
         }
 
-        public void setUrl(String url){
+        public void setUrl(String url) {
             this.url = url;
         }
 
-        public void addHeader(String header, String value){
-            this.headers.put(header,value);
+        public void addHeader(String header, String value) {
+            this.headers.put(header, value);
         }
 
-        public void setHeaders(Map<String, String> headers){
+        public void setHeaders(Map<String, String> headers) {
             this.headers = headers;
         }
 
-        public void addFormField(String field, String value){
-            this.form.put(field,value);
+        public void addFormField(String field, String value) {
+            this.form.put(field, value);
         }
 
-        public void setForm(Map<String, String> form){
+        public void setForm(Map<String, String> form) {
             this.form = form;
         }
 
-        public String getFormField(String key){
+        public String getFormField(String key) {
             return this.getForm().get(key);
         }
 
-        public String getUrl(){
+        public String getUrl() {
             return this.url;
         }
 
-        public Map<String, String> getForm(){
+        public Map<String, String> getForm() {
             return this.form;
         }
 
-        public Map<String, String> getHeaders(){
+        public Map<String, String> getHeaders() {
             return this.headers;
         }
     }

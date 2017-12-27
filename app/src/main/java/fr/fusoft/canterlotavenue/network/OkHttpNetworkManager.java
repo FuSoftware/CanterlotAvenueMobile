@@ -1,12 +1,13 @@
 package fr.fusoft.canterlotavenue.network;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.fusoft.canterlotavenue.controller.NetworkController;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.FormBody;
@@ -14,16 +15,13 @@ import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * Created by fuguet on 23/12/17.
  */
 
 public class OkHttpNetworkManager extends NetworkManager {
-
+    private static final String LOG_TAG = "OkHttpNetworkManager";
     OkHttpClient client = null;
 
     /* This interceptor adds a custom User-Agent. */
@@ -72,14 +70,23 @@ public class OkHttpNetworkManager extends NetworkManager {
                         return cookies != null ? cookies : new ArrayList<Cookie>();
                     }
                 })
-                .followRedirects(true)
-                //.addInterceptor(new StandardHeadersInterecptor())
+                .followRedirects(false)
                 .addInterceptor(new OkHttpNetworkManager.UserAgentInterceptor("Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"))
                 .build();
     }
 
     @Override
     public Response process(Request req) {
+
+        if(req == null){
+            Log.e(LOG_TAG, "Trying to process a null Request");
+            return null;
+        }
+
+        if(req.getUrl().equals("")){
+            Log.e(LOG_TAG, "Empty URL to process");
+            return null;
+        }
 
         okhttp3.Request.Builder request = new okhttp3.Request.Builder();
         request.url(req.getUrl());

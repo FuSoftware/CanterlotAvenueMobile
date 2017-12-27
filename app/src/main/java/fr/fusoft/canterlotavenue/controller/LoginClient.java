@@ -21,12 +21,12 @@ import fr.fusoft.canterlotavenue.network.NetworkManager.Response;
  * Created by Florent on 18/12/2017.
  */
 
-public class     LoginClient {
-    private static final String LOG_TAG = "LoginClient";
-    private static final String URL_PONIVERSE_OAUTH = "https://poniverse.net/oauth/login";
-    private static final String URL_PONIVERSE_LOGIN = "https://poniverse.net/login";
-    private static final String URL_CANTERLOT_AVENUE_PONAUTH = "http://canterlotavenue.com/ponauth/";
-    private static final String URL_CANTERLOT_AVENUE = "https://canterlotavenue.com";
+public class LoginClient {
+    public static final String LOG_TAG = "LoginClient";
+    public static final String URL_PONIVERSE_OAUTH = "https://poniverse.net/oauth/login";
+    public static final String URL_PONIVERSE_LOGIN = "https://poniverse.net/login";
+    public static final String URL_CANTERLOT_AVENUE_PONAUTH = "http://canterlotavenue.com/ponauth/";
+    public static final String URL_CANTERLOT_AVENUE = "https://canterlotavenue.com";
 
     public interface LoginListener{
         void onLoginSuccess();

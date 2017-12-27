@@ -122,6 +122,7 @@ public class OkHttpNetworkManager extends NetworkManager {
             return response;
 
         }catch(Exception e){
+            Log.e(LOG_TAG, "Error while processing the request : " + e.toString());
             Response response = new Response(-1, "Error while processing the request : " + e.toString());
             response.setRequest(req);
             return response;

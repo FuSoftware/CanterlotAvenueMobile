@@ -10,6 +10,8 @@ import android.widget.Toast;
 import fr.fusoft.canterlotavenue.R;
 import fr.fusoft.canterlotavenue.controller.LoginClient;
 import fr.fusoft.canterlotavenue.controller.NetworkController;
+import fr.fusoft.canterlotavenue.network.NetworkManager;
+import fr.fusoft.canterlotavenue.network.OkHttpNetworkManager;
 
 /**
  * Created by Florent on 20/12/2017.
@@ -17,7 +19,7 @@ import fr.fusoft.canterlotavenue.controller.NetworkController;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private NetworkController c = NetworkController.globalController;
+    private NetworkManager c = new OkHttpNetworkManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
